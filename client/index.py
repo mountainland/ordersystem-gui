@@ -2,7 +2,9 @@ import tkinter as tk
 
 from requesting import Ordersystem
 
-api = Ordersystem("https://dev.backend.order.mountainland.fi")
+api = Ordersystem("https://api.ordersystem.luova.club")
+
+prices = {}
 
 products = []
 
@@ -19,7 +21,7 @@ def reload_screen():
     puh_entry.pack()
     products.append(puh_entry)
     for product in api.list_product_list_apis():
-        label = tk.Label(root, text=f'{product["name"]}')
+        label = tk.Label(root, text=f'{product["Name"]} {product["Price"]}€')
         label.pack()
 
         entry = tk.Entry(root)
@@ -31,14 +33,15 @@ def reload_screen():
     button.pack()
 
 def show_entry_contents():
-    order = {}
+    order = []
 
     for item in products[1:]:
-        order[item[1]["text"]] = item[0].get()
+        order.append({"count": item[0].get(), "price": item[1]["text"].split(" ")[-1]})
 
-    request_data = {"order": order, "ready": False, "customer": products[0].get()}
+    request_data = {"Order": order, "Customer": products[0].get()}
 
-    api.create_order_list_api(request_data)
+    response = api.create_order_list_api(request_data)
+    
     reload_screen()
 
 root = tk.Tk()

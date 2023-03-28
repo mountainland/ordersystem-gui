@@ -8,13 +8,13 @@ class Ordersystem():
 
     def list_order_list_apis(self):
         """Retrieve a list of all orders"""
-        url = f"{self.base_url}/ordersystem/api"
+        url = f"{self.base_url}/orders/"
         response = requests.get(url)
         return response.json()
 
     def create_order_list_api(self, data):
         """Create a new order"""
-        url = f"{self.base_url}/ordersystem/api"
+        url = f"{self.base_url}/orders/"
         headers = {'Content-Type': 'application/json'}
         response = requests.post(url, json=data, headers=headers)
         return response.json()
@@ -40,6 +40,7 @@ class Ordersystem():
 
     def list_product_list_apis(self):
         """Retrieve a list of all products"""
-        url = f"{self.base_url}/ordersystem/api/products/"
+        url = f"{self.base_url}/products/"
         response = requests.get(url)
-        return response.json()
+        return response.json()["products"]
+        
