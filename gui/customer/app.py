@@ -5,7 +5,7 @@ import tkinter.messagebox
 import customtkinter
 import requests
 import traceback
-
+import json
 
 class CustomerApp(customtkinter.CTkToplevel):
     def __init__(self, *args, **kwargs):
@@ -48,8 +48,9 @@ class CustomerApp(customtkinter.CTkToplevel):
             # Make API request to get customer info
             customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
             customer_response = requests.get(customer_url)
-            customer_response.raise_for_status()
-            customer_data = customer_response.json()
+            #customer_response.raise_for_status()
+            customer_data = json.loads(customer_response.text.replace("'", '"'))
+            #customer_data = customer_response.json()
             self.attributes('-topmost', False)  # for focus on topleve
             # Create popup window with customer info and editing fields
             popup_window = customtkinter.CTkToplevel()
@@ -107,7 +108,7 @@ class CustomerApp(customtkinter.CTkToplevel):
         payload = {
             "FirstName": first_name,
             "LastName": last_name,
-            "Balance": balance
+            "Balance": int(balance)
         }
 
         try:

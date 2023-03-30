@@ -17,7 +17,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # configure window
-        self.title("CustomTkinter complex_example.py")
+        self.title("LuovaClub")
         self.geometry(f"{1100}x{580}")
 
         self.order_window = None
@@ -80,8 +80,9 @@ class App(customtkinter.CTk):
             # create window if its None or destroyed
             self.order_window = OrderApp(self)
 
-        # else:
-            # self.order_window.focus_force()  # if window exists focus it
+        else:
+            self.order_window.destroy()
+            self.open_order_menu()
 
     def open_customer_menu(self):
         if self.customer_window is None or not self.customer_window.winfo_exists():

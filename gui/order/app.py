@@ -42,7 +42,11 @@ class OrderApp(customtkinter.CTkToplevel):
             entry = customtkinter.CTkEntry(master=self, placeholder_text=f"1")
             entry.pack(padx=20, pady=10)
             self.products.append((product["Name"], product["Price"], entry))
-
+        
+        self.send_button = customtkinter.CTkButton(
+            self, text="Submit", command=self.send_order)
+        self.send_button.pack(pady=10)
+            
         self.exit_button = customtkinter.CTkButton(
             self, text="Exit", command=self.destroy)
         self.exit_button.pack(pady=10)
@@ -53,58 +57,17 @@ class OrderApp(customtkinter.CTkToplevel):
         for product in self.products:
             value = product[2].get()
             order.append(
-                {"name": product[0], "price": product[1], "count": value})
+                {"name": product[0], "price": int(product[1]), "count": int(value)})
 
-        data["customer"] = self.customer_entry.get()
+        data["customer"] = int(self.customer_entry.get()) # type: ignore
 
         orders_url = f"https://api.ordersystem.luova.club/orders/"
-        product_response = requests.post(products_url, json=data)
-        product_response.raise_for_status()
-
-    def fetch_customer_info(self):
-        # Get customer ID from entry widget
-        customer_id = self.customer_id_entry.get()
-
         try:
-            # Make API request to get customer info
-            customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
-            customer_response = requests.get(customer_url)
-            customer_response.raise_for_status()
-            customer_data = customer_response.json()
+            order_response = requests.post(orders_url, json=data)
+            #order_response.raise_for_status()
+            
+            
 
-            # Create popup window with customer info and editing fields
-            popup_window = customtkinter.CTkToplevel()
-            popup_window.title("Customer Info")
-            popup_window.geometry("300x500")
-
-            first_name_label = customtkinter.CTkLabel(
-                popup_window, text="First Name:")
-            first_name_label.pack(pady=5)
-            first_name_entry = customtkinter.CTkEntry(popup_window)
-            first_name_entry.pack(pady=5)
-            first_name_entry.insert(0, customer_data.get('FirstName'))
-
-            last_name_label = customtkinter.CTkLabel(
-                popup_window, text="Last Name:")
-            last_name_label.pack(pady=5)
-            last_name_entry = customtkinter.CTkEntry(popup_window)
-            last_name_entry.pack(pady=5)
-            last_name_entry.insert(0, customer_data.get('LastName'))
-
-            balance_label = customtkinter.CTkLabel(
-                popup_window, text="Balance:")
-            balance_label.pack(pady=5)
-            balance_entry = customtkinter.CTkEntry(popup_window)
-            balance_entry.pack(pady=5)
-            balance_entry.insert(0, customer_data.get('Balance'))
-
-            save_button = customtkinter.CTkButton(popup_window, text="Save", command=lambda: self.save_customer_info(
-                customer_id, first_name_entry.get(), last_name_entry.get(), balance_entry.get()))
-            save_button.pack(pady=10)
-
-            close_button = customtkinter.CTkButton(
-                popup_window, text="Close", command=popup_window.destroy)
-            close_button.pack(pady=10)
         except requests.exceptions.RequestException as e:
             # Show error message and technical details in popup window
             popup_window = tk.Toplevel()
@@ -122,3 +85,17 @@ class OrderApp(customtkinter.CTkToplevel):
             close_button = customtkinter.CTkButton(
                 popup_window, text="Close", command=popup_window.destroy)
             close_button.pack(pady=10)
+            
+    def show_technical_details(self, technical_details):
+        # Show technical details in popup window
+        popup_window = tk.Toplevel()
+        popup_window.title("Technical Details")
+        popup_window.geometry("500x300")
+
+        technical_details_label = customtkinter.CTkLabel(
+            popup_window, text=technical_details)
+        technical_details_label.pack(pady=10)
+
+        close_button = customtkinter.CTkButton(
+            popup_window, text="Close", command=popup_window.destroy)
+        close_button.pack(pady=10)

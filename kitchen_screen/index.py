@@ -19,11 +19,10 @@ def reload_screen(row=row, column=column):
 
     for product in api.list_order_list_apis():
         text = ""
-        text += "\nTILAUS:"
         text += f'\nTilaaja: {product["customer"]}'
         for product1 in product["order"]:
             text += f"\n{product1}: {product['order'][product1]}"
-        tk.Message(root, width=800, text=text, highlightbackground="red", highlightcolor="red", highlightthickness=10).grid(column=column, row=row)
+        tk.Message(root, width=800, text=text, highlightbackground="red", highlightcolor="red", highlightthickness=10).grid(column=column, row=row, padx=10, pady=10)
         if not column > 4:
             column += 1
         else:
