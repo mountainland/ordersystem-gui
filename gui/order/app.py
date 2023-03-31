@@ -48,7 +48,7 @@ class OrderApp(customtkinter.CTkToplevel):
         self.send_button.pack(pady=10)
             
         self.exit_button = customtkinter.CTkButton(
-            self, text="Exit", command=self.destroy)
+            self, text="Poistu", command=self.destroy)
         self.exit_button.pack(pady=10)
 
     def send_order(self):

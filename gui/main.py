@@ -101,10 +101,10 @@ class App(customtkinter.CTk):
             self.sidebar_frame, text="LuovaClub", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.sidebar_button_order = customtkinter.CTkButton(
-            self.sidebar_frame, command=self.open_order_menu, text="Order")
+            self.sidebar_frame, command=self.open_order_menu, text="Tilaus")
         self.sidebar_button_order.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_button_customer = customtkinter.CTkButton(
-            self.sidebar_frame, command=self.open_customer_menu, text="Customer")
+            self.sidebar_frame, command=self.open_customer_menu, text="Asiakas")
         self.sidebar_button_customer.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_logout = customtkinter.CTkButton(
             self.sidebar_frame, command=self.logout, text="Logout")
