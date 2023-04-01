@@ -43,7 +43,7 @@ class LoginWindow(customtkinter.CTkToplevel):
         password = self.password_entry.get()
 
         
-        url = "http://api.ordersystem.luova.club:8081/login/"
+        url = "https://api.ordersystem.luova.club/login/"
 
         payload={}
         headers = {

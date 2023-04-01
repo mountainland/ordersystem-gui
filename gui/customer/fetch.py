@@ -48,7 +48,7 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
 
         try:
             # Make API request to get customer info
-            customer_url = f"http://api.ordersystem.luova.club:8081/customer/{customer_id}"
+            customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
             headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
 
             customer_response = requests.get(customer_url, headers=headers)
@@ -117,7 +117,7 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
 
         try:
             # Make API request to update customer info
-            customer_url = f"http://api.ordersystem.luova.club:8081/customer/{customer_id}"
+            customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
             headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
 
             customer_response = requests.post(customer_url, json=payload, headers=headers)

@@ -56,7 +56,7 @@ class CustomerCreateApp(customtkinter.CTkToplevel):
 
         try:
             # Make API request to get customer info
-            customer_url = f"http://api.ordersystem.luova.club:8081/customers/"
+            customer_url = f"https://api.ordersystem.luova.club/customers/"
             headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
             customer_response = requests.post(customer_url, data=json.dumps({"FirstName": first_name, "LastName": last_name}), headers=headers)
             customer_response.raise_for_status()
@@ -105,7 +105,7 @@ class CustomerCreateApp(customtkinter.CTkToplevel):
 
         try:
             # Make API request to update customer info
-            customer_url = f"http://api.ordersystem.luova.club:8081/customer/{customer_id}"
+            customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
             customer_response = requests.post(customer_url, json=payload)
             customer_response.raise_for_status()
 
