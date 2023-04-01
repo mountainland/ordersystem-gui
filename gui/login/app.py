@@ -42,11 +42,22 @@ class LoginWindow(customtkinter.CTkToplevel):
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        # TODO: Validate username and password with backend API
+        
+        url = "http://api.ordersystem.luova.club:8081/login/"
 
-        if username == "admin" and password == "password":
+        payload={}
+        headers = {
+        'user': username,
+        'password': password
+        }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        if not response.status_code == 401:
             self.destroy()
             self.parent.logged_in = True
+            self.parent.username = username
+            self.parent.password = password
         else:
             self.error_label.config(text="Invalid username or password")
             self.error_label.pack(pady=10)

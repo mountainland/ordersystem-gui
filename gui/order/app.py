@@ -8,9 +8,11 @@ import traceback
 
 
 class OrderApp(customtkinter.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent):
+        super().__init__(parent)
         self.geometry(f"{1100}x{580}")
+        self.username = parent.username
+        self.password = parent.password
         self.title("Order")
         self.focus()
         self.label = customtkinter.CTkLabel(self, text="Order")
@@ -22,8 +24,10 @@ class OrderApp(customtkinter.CTkToplevel):
 
     def build_main(self):
         self.products = []
-        products_url = f"https://api.ordersystem.luova.club/products/"
-        product_response = requests.get(products_url)
+        products_url = f"http://api.ordersystem.luova.club:8081/products/"
+        headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+
+        product_response = requests.get(products_url, headers=headers)
         product_response.raise_for_status()
         products_data = product_response.json()
         products = products_data["products"]
@@ -61,12 +65,12 @@ class OrderApp(customtkinter.CTkToplevel):
 
         data["customer"] = int(self.customer_entry.get()) # type: ignore
 
-        orders_url = f"https://api.ordersystem.luova.club/orders/"
+        orders_url = f"http://api.ordersystem.luova.club:8081/orders/"
+        headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+
         try:
-            order_response = requests.post(orders_url, json=data)
-            #order_response.raise_for_status()
-            
-            
+            order_response = requests.post(orders_url, json=data, headers=headers)
+            order_response.raise_for_status()
 
         except requests.exceptions.RequestException as e:
             # Show error message and technical details in popup window

@@ -19,7 +19,11 @@ class App(customtkinter.CTk):
         # configure window
         self.title("LuovaClub")
         self.geometry(f"{1100}x{580}")
-
+        
+        self.username = None
+        
+        self.password = None
+        
         self.order_window = None
 
         self.customer_window = None
@@ -72,8 +76,8 @@ class App(customtkinter.CTk):
         self.build_sidebar()
 
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure((2, 3), weight=0)
-        self.grid_rowconfigure((0, 1, 2), weight=1)
+        self.grid_columnconfigure((2, 3), weight=0) # type: ignore
+        self.grid_rowconfigure((0, 1, 2), weight=1) # type: ignore
 
     def open_order_menu(self):
         if self.order_window is None or not self.order_window.winfo_exists():

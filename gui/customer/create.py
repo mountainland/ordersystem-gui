@@ -8,8 +8,10 @@ import traceback
 import json
 
 class CustomerCreateApp(customtkinter.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.username = parent.username
+        self.password = parent.password
         self.geometry(f"{1100}x{580}")
         self.title("Asiakas")
         self.label = customtkinter.CTkLabel(self, text="Asiakkaan luonti")
@@ -54,8 +56,9 @@ class CustomerCreateApp(customtkinter.CTkToplevel):
 
         try:
             # Make API request to get customer info
-            customer_url = f"https://api.ordersystem.luova.club/customers/"
-            customer_response = requests.post(customer_url, data=json.dumps({"FirstName": first_name, "LastName": last_name}))
+            customer_url = f"http://api.ordersystem.luova.club:8081/customers/"
+            headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+            customer_response = requests.post(customer_url, data=json.dumps({"FirstName": first_name, "LastName": last_name}), headers=headers)
             customer_response.raise_for_status()
             customer_data = json.loads(customer_response.text.replace("'", '"'))
             
@@ -102,7 +105,7 @@ class CustomerCreateApp(customtkinter.CTkToplevel):
 
         try:
             # Make API request to update customer info
-            customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
+            customer_url = f"http://api.ordersystem.luova.club:8081/customer/{customer_id}"
             customer_response = requests.post(customer_url, json=payload)
             customer_response.raise_for_status()
 

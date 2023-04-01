@@ -12,8 +12,11 @@ from .create import CustomerCreateApp
 from .fetch import CustomerFetchApp
 
 class CustomerApp(customtkinter.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.username = parent.username
+        self.password = parent.password
+    
         self.geometry(f"{1100}x{580}")
         self.title("Customer")
         self.label = customtkinter.CTkLabel(self, text="Customer")
