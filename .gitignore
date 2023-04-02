@@ -1,0 +1,6 @@
+*/dist
+*/build
+*.spec
+*.manifest
+*.zip
+*.pyc
