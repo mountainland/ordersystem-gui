@@ -20,9 +20,7 @@ class App(customtkinter.CTk):
         self.title("LuovaClub")
         self.geometry(f"{1100}x{580}")
         
-        self.username = None
-        
-        self.password = None
+        self.user = {}
         
         self.order_window = None
 

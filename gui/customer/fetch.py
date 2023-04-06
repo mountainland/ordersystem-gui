@@ -7,11 +7,11 @@ import requests
 import traceback
 import json
 
+
 class CustomerFetchApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.username = parent.username
-        self.password = parent.password
+        self.user = parent.user
         self.geometry(f"{1100}x{580}")
         self.title("Customer")
         self.label = customtkinter.CTkLabel(self, text="Asiakashaku")
@@ -49,12 +49,14 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
         try:
             # Make API request to get customer info
             customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
-            headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+            headers = {"Content-Type": "application/json",
+                       "user": self.user["username"], "password": self.user["password"]}
 
             customer_response = requests.get(customer_url, headers=headers)
-            #customer_response.raise_for_status()
-            customer_data = json.loads(customer_response.text.replace("'", '"'))
-            #customer_data = customer_response.json()
+            # customer_response.raise_for_status()
+            customer_data = json.loads(
+                customer_response.text.replace("'", '"'))
+            # customer_data = customer_response.json()
             self.attributes('-topmost', False)  # for focus on topleve
             # Create popup window with customer info and editing fields
             popup_window = customtkinter.CTkToplevel()
@@ -118,9 +120,11 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
         try:
             # Make API request to update customer info
             customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
-            headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+            headers = {"Content-Type": "application/json",
+                       "user": self.user["username"], "password": self.user["password"]}
 
-            customer_response = requests.post(customer_url, json=payload, headers=headers)
+            customer_response = requests.post(
+                customer_url, json=payload, headers=headers)
             customer_response.raise_for_status()
 
             # Show success message in popup window
@@ -135,6 +139,7 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
             close_button = customtkinter.CTkButton(
                 popup_window, text="Poistu", command=popup_window.destroy)
             close_button.pack(pady=10)
+
         except requests.exceptions.RequestException as e:
             # Show error message and technical details in popup window
             popup_window = tk.Toplevel()

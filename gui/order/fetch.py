@@ -8,12 +8,16 @@ import requests
 import traceback
 import json
 
+from .functions import create_error_window, add_products_to_popup, setup_popup_defaults, create_popup  # pylint: disable=relative-beyond-top-level
+
+
 class OrderSearchApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
+        # TODO: #1 figure out, why this is f string
         self.geometry(f"{1100}x{580}")
-        self.username = parent.username
-        self.password = parent.password
+        self.user = parent.user
+
         self.title("Order")
         self.focus()
         self.label = customtkinter.CTkLabel(self, text="Tilauksen hakeminen")
@@ -44,87 +48,61 @@ class OrderSearchApp(customtkinter.CTkToplevel):
 
     def fetch_order_info(self):
         order_url = f"https://api.ordersystem.luova.club/order/{self.order_id_entry.get()}"
-        headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+        headers = {"Content-Type": "application/json",
+                   "user": self.user["username"], "password": self.user["password"]}
 
         try:
-            order_response = requests.get(order_url, headers=headers)
-            order_response.raise_for_status()    
-            print(order_response.text)
-            text = order_response.text.replace("'", '"').replace("False", "false")
-            print(text)
-            order_info = json.loads(text)
+            order_info = self.get_order(order_url, headers)
             self.order_info = order_info
 
-            #order_info = customer_response.json()
             self.attributes('-topmost', False)  # for focus on topleve
-            # Create popup window with customer info and editing fields
-            popup_window = customtkinter.CTkToplevel()
-            popup_window.title("Tilauksen tiedot")
-            popup_window.geometry("300x500")
-            popup_window.attributes('-topmost', True)  # for focus on toplevel
-            
-            label = customtkinter.CTkLabel(
-                    master=popup_window, text=f'Asiakas ID:')
-            label.pack()
-            entry = customtkinter.CTkEntry(master=popup_window, placeholder_text=f"1")
-            entry.pack(padx=20, pady=10)
-            entry.insert(0, order_info["Customer"])
-            entry.configure(state="disabled")
-            
-            
-            for product in order_info["Order"]:
 
-                label = customtkinter.CTkLabel(
-                    master=popup_window, text=f'{product["name"]} {product["price"]}€')
-                label.pack()
-                entry = customtkinter.CTkEntry(master=popup_window, placeholder_text=f"1")
-                entry.pack(padx=20, pady=10)
-                entry.insert(0, product["count"])
-                entry.configure(state="disabled")
-                self.products.append((product["name"], product["price"], entry))
-            
+            # Create popup window with customer info and editing fields
+            popup_window = create_popup()  # Create popup window
+
+            setup_popup_defaults(order_info, popup_window)             # put order info things to popup window
+
+
+            # Add products in order to popup window
+            add_products_to_popup(self, order_info, popup_window)
+
             order_is_ready_label = customtkinter.CTkLabel(
                 popup_window, text="Valmiina:")
             order_is_ready_label.pack(pady=5)
-            
-            entry = customtkinter.CTkEntry(master=popup_window, placeholder_text=f"1")
+
+            entry = customtkinter.CTkEntry(
+                master=popup_window, placeholder_text="1")
             entry.pack(padx=20, pady=10)
             isready = "Ei"
-            if order_info["IsReady"] == True:
+            if order_info["IsReady"] is True:
                 isready = "Kyllä"
             entry.insert(0, isready)
             entry.configure(state="disabled")
-                
+
             label = customtkinter.CTkLabel(
-                    master=popup_window, text=f'Kokonaishinta:')
+                master=popup_window, text='Kokonaishinta:')
             label.pack()
-            entry = customtkinter.CTkEntry(master=popup_window, placeholder_text=f"1")
+            entry = customtkinter.CTkEntry(
+                master=popup_window, placeholder_text="1")
             entry.pack(padx=20, pady=10)
             entry.insert(0, order_info["Price"])
             entry.configure(state="disabled")
-            
+
             close_button = customtkinter.CTkButton(
-                popup_window, text="Poistu", command=lambda: popup_window.destroy())
+                popup_window, text="Poistu", command=popup_window.destroy)  # Define close button
             close_button.pack(pady=10)
-            
+
         except requests.exceptions.RequestException as e:
-            # Show error message and technical details in popup window
-            popup_window = tk.Toplevel()
-            popup_window.title("Virhe")
-            popup_window.geometry("300x200")
+            create_error_window()
 
-            error_label = customtkinter.CTkLabel(
-                popup_window, text=f"Virhe: {e}")
-            error_label.pack(pady=10)
+    def get_order(self, order_url, headers):
+        order_response = requests.get(order_url, headers=headers)
+        order_response.raise_for_status()
+        text = order_response.text.replace(
+            "'", '"').replace("False", "false")
+        order_info = json.loads(text)
+        return order_info
 
-            show_details_button = customtkinter.CTkButton(
-                popup_window, text="Näytä lisätietoa (asiantuntijatila)", command=lambda: self.show_technical_details(traceback.format_exc()))
-            show_details_button.pack(pady=10)
-
-            close_button = customtkinter.CTkButton(
-                popup_window, text="Poistu", command=popup_window.destroy)
-            close_button.pack(pady=10)
-            
     def show_technical_details(self, technical_details):
         # Show technical details in popup window
         popup_window = tk.Toplevel()

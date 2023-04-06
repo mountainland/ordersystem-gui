@@ -5,12 +5,13 @@ import tkinter.messagebox
 import customtkinter
 import requests
 import traceback
-
+import json
 
 class LoginWindow(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
+        self.user = parent.user
         self.title("Login")
         self.geometry("300x500")
         self.attributes('-fullscreen', True)
@@ -54,10 +55,12 @@ class LoginWindow(customtkinter.CTkToplevel):
         response = requests.request("POST", url, headers=headers, data=payload)
 
         if not response.status_code == 401:
+            respons = json.loads(response.text.replace("'", '"'))
             self.destroy()
+            self.user["is_admin"] = respons["is_admin"]
+            self.user["username"] = username
+            self.user["password"] = password
             self.parent.logged_in = True
-            self.parent.username = username
-            self.parent.password = password
         else:
             self.error_label.config(text="Invalid username or password")
             self.error_label.pack(pady=10)
