@@ -14,8 +14,8 @@ from .functions import create_error_window, add_products_to_popup, setup_popup_d
 class OrderSearchApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        # TODO: #1 figure out, why this is f string
-        self.geometry(f"{1100}x{580}")
+        self.geometry(f"{1100}x{580}") # TODO: #1 figure out, why this is f string
+
         self.user = parent.user
 
         self.title("Order")

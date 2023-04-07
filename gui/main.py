@@ -19,9 +19,9 @@ class App(customtkinter.CTk):
         # configure window
         self.title("LuovaClub")
         self.geometry(f"{1100}x{580}")
-        
+
         self.user = {}
-        
+
         self.order_window = None
 
         self.customer_window = None
@@ -74,8 +74,8 @@ class App(customtkinter.CTk):
         self.build_sidebar()
 
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure((2, 3), weight=0) # type: ignore
-        self.grid_rowconfigure((0, 1, 2), weight=1) # type: ignore
+        self.grid_columnconfigure((2, 3), weight=0)  # type: ignore
+        self.grid_rowconfigure((0, 1, 2), weight=1)  # type: ignore
 
     def open_order_menu(self):
         if self.order_window is None or not self.order_window.winfo_exists():
@@ -99,18 +99,25 @@ class App(customtkinter.CTk):
             self, width=140, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
+        
         self.logo_label = customtkinter.CTkLabel(
             self.sidebar_frame, text="LuovaClub", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        
         self.sidebar_button_order = customtkinter.CTkButton(
             self.sidebar_frame, command=self.open_order_menu, text="Tilaus")
         self.sidebar_button_order.grid(row=1, column=0, padx=20, pady=10)
+        
         self.sidebar_button_customer = customtkinter.CTkButton(
             self.sidebar_frame, command=self.open_customer_menu, text="Asiakas")
         self.sidebar_button_customer.grid(row=2, column=0, padx=20, pady=10)
+        
+        #TODO: 
+        
         self.sidebar_button_logout = customtkinter.CTkButton(
             self.sidebar_frame, command=self.logout, text="Logout")
         self.sidebar_button_logout.grid(row=3, column=0, padx=20, pady=10)
+        
         self.appearance_mode_label = customtkinter.CTkLabel(
             self.sidebar_frame, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
