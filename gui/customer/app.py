@@ -14,7 +14,7 @@ from .fetch import CustomerFetchApp # pylint: disable=relative-beyond-top-level
 class CustomerApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.user = self.parent.user
+        self.user = parent.user
     
         self.geometry(f"{1100}x{580}")
         self.title("Customer")

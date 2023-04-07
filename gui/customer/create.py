@@ -11,7 +11,7 @@ import json
 class CustomerCreateApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.username = parent.user
+        self.user = parent.user
         self.geometry(f"{1100}x{580}")
         self.title("Asiakas")
         self.label = customtkinter.CTkLabel(self, text="Asiakkaan luonti")
@@ -35,6 +35,20 @@ class CustomerCreateApp(customtkinter.CTkToplevel):
         self.last_name_entry = customtkinter.CTkEntry(self)
         self.last_name_entry.pack(pady=5)
 
+        self.phonenumber_label = customtkinter.CTkLabel(
+            self, text="Puhelinnumero:")
+        self.phonenumber_label.pack(pady=10)
+
+        self.phonenumber_entry = customtkinter.CTkEntry(self)
+        self.phonenumber_entry.pack(pady=5)
+        
+        self.email_label = customtkinter.CTkLabel(
+            self, text="Sähköposti:")
+        self.email_label.pack(pady=10)
+
+        self.email_entry = customtkinter.CTkEntry(self)
+        self.email_entry.pack(pady=5)
+        
         # Create button to fetch customer info
         self.create_button = customtkinter.CTkButton(
             self, text="Luo asiakas", command=self.create_customer)
@@ -53,33 +67,28 @@ class CustomerCreateApp(customtkinter.CTkToplevel):
         # Get customer ID from entry widget
         first_name = self.first_name_entry.get()
         last_name = self.last_name_entry.get()
+        phonenumber = self.phonenumber_entry.get()
+        email = self.email_entry.get()
 
         try:
             # Make API request to get customer info
             customer_url = f"https://api.ordersystem.luova.club/customers/"
             headers = {"Content-Type": "application/json",
                        "user": self.user["username"], "password": self.user["password"]}
-            customer_response = requests.post(customer_url, data=json.dumps(
-                {"FirstName": first_name, "LastName": last_name}), headers=headers)
+            customer_response = requests.post(customer_url, data=json.dumps({"FirstName": first_name, "LastName": last_name, "PhoneNumber": phonenumber, "Email": email}), headers=headers)
             customer_response.raise_for_status()
             customer_data = json.loads(
                 customer_response.text.replace("'", '"'))
 
             customer_id = customer_data["id"]
-
-            self.attributes('-topmost', False)  # for focus on topleve
-            # Create popup window with customer info and editing fields
-            popup_window = customtkinter.CTkToplevel()
-            popup_window.title("Customer Info")
-            popup_window.geometry("300x500")
-            popup_window.attributes('-topmost', True)  # for focus on toplevel
             id_label = customtkinter.CTkLabel(
-                popup_window, text=f"Asiakas id: {customer_id}")
+                self, text=f"Asiakas id: {customer_id}")
             id_label.pack(pady=5)
 
             close_button = customtkinter.CTkButton(
-                popup_window, text="Close", command=lambda: self.shut(popup_window))
+                self, text="Close", command=lambda: self.destroy())
             close_button.pack(pady=10)
+            
         except requests.exceptions.RequestException as e:
             # Show error message and technical details in popup window
             popup_window = tk.Toplevel()

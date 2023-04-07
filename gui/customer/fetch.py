@@ -76,16 +76,34 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
             last_name_entry = customtkinter.CTkEntry(popup_window)
             last_name_entry.pack(pady=5)
             last_name_entry.insert(0, customer_data.get('LastName'))
+            
+            phonenumber_label = customtkinter.CTkLabel(
+                popup_window, text="Puhelinnumero:")
+            phonenumber_label.pack(pady=5)
+            phonenumber_entry = customtkinter.CTkEntry(popup_window)
+            phonenumber_entry.pack(pady=5)
+            phonenumber_entry.insert(0, customer_data.get('PhoneNumber'))
+            
+            email_label = customtkinter.CTkLabel(
+                popup_window, text="Sähköposti:")
+            email_label.pack(pady=5)
+            email_entry = customtkinter.CTkEntry(popup_window)
+            email_entry.pack(pady=5)
+            email_entry.insert(0, customer_data.get('Email'))
 
             balance_label = customtkinter.CTkLabel(
                 popup_window, text="Saldo:")
             balance_label.pack(pady=5)
+            
             balance_entry = customtkinter.CTkEntry(popup_window)
             balance_entry.pack(pady=5)
-            balance_entry.insert(0, customer_data.get('Balance'))
+            balance_entry.insert(0, customer_data.get('Balance'))            
+        
+            if not self.user["is_admin"]:
+                balance_entry.configure(state="disabled")                
 
             save_button = customtkinter.CTkButton(popup_window, text="Tallenna muutokset", command=lambda: self.save_customer_info(
-                customer_id, first_name_entry.get(), last_name_entry.get(), balance_entry.get()))
+                customer_id, first_name_entry.get(), last_name_entry.get(), balance_entry.get(), phonenumber_entry.get(), email_entry.get()))
             save_button.pack(pady=10)
 
             close_button = customtkinter.CTkButton(
@@ -109,14 +127,16 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
                 popup_window, text="Poistu", command=popup_window.destroy)
             close_button.pack(pady=10)
 
-    def save_customer_info(self, customer_id, first_name, last_name, balance):
+    def save_customer_info(self, customer_id, first_name, last_name, balance, phonenumber, email):
         # Create payload data
         payload = {
             "FirstName": first_name,
             "LastName": last_name,
-            "Balance": int(balance)
-        }
-
+            "PhoneNumber": phonenumber,
+            "Email": email}
+        
+        payload["Balance"] = int(balance)
+            
         try:
             # Make API request to update customer info
             customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
