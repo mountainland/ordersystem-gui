@@ -18,7 +18,7 @@ class OrderSearchApp(customtkinter.CTkToplevel):
 
         self.user = parent.user
 
-        self.title("Order")
+        self.title("Tilaus")
         self.focus()
         self.label = customtkinter.CTkLabel(self, text="Tilauksen hakeminen")
         self.label.pack(padx=20, pady=20)
@@ -74,7 +74,7 @@ class OrderSearchApp(customtkinter.CTkToplevel):
                 master=popup_window, placeholder_text="1")
             entry.pack(padx=20, pady=10)
             isready = "Ei"
-            if order_info["IsReady"] is True:
+            if order_info["is_ready"] is True:
                 isready = "Kyllä"
             entry.insert(0, isready)
             entry.configure(state="disabled")
@@ -85,21 +85,38 @@ class OrderSearchApp(customtkinter.CTkToplevel):
             entry = customtkinter.CTkEntry(
                 master=popup_window, placeholder_text="1")
             entry.pack(padx=20, pady=10)
-            entry.insert(0, order_info["Price"])
+            entry.insert(0, order_info["price"])
             entry.configure(state="disabled")
 
             close_button = customtkinter.CTkButton(
                 popup_window, text="Poistu", command=popup_window.destroy)  # Define close button
             close_button.pack(pady=10)
+            
+            ready_button = customtkinter.CTkButton(
+                popup_window, text="Tilaus valmis", command=self.mark_ready
+            )
+            ready_button.pack(pady=10)
 
         except requests.exceptions.RequestException as e:
             create_error_window()
 
+    def mark_ready(self):
+        orders_url = f"https://api.ordersystem.luova.club/order/{self.order_id_entry.get()}"
+        headers = {"Content-Type": "application/json",
+                "user": self.user["username"], "password": self.user["password"]}
+
+        data = {"is_ready": True}
+        
+        order_response = requests.post(
+            orders_url, json=data, headers=headers, timeout=20)
+        order_response.raise_for_status()
+            
     def get_order(self, order_url, headers):
         order_response = requests.get(order_url, headers=headers)
         order_response.raise_for_status()
-        text = order_response.text.replace(
-            "'", '"').replace("False", "false")
+        text = order_response.text.replace("'", '"').replace("False", "false").replace("True", "true")
+        print(text)
+
         order_info = json.loads(text)
         return order_info
 

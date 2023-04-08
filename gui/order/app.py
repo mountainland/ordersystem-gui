@@ -17,8 +17,8 @@ class OrderApp(customtkinter.CTkToplevel):
         self.user = parent.user
 
         self.geometry(f"{1100}x{580}")
-        self.title("Customer")
-        self.label = customtkinter.CTkLabel(self, text="Customer")
+        self.title("Tilaus")
+        self.label = customtkinter.CTkLabel(self, text="Tilaus")
         self.label.pack(padx=20, pady=20)
         self.attributes('-topmost', True)  # for focus on toplevel
         self.build_menu()

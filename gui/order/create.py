@@ -17,7 +17,7 @@ class OrderCreateApp(customtkinter.CTkToplevel):
         self.geometry(f"{1100}x{580}")
         self.user = parent.user
 
-        self.title("Order")
+        self.title("Tilaus")
         self.focus()
         self.label = customtkinter.CTkLabel(self, text="Tilauksen luominen")
         self.label.pack(padx=20, pady=20)
@@ -46,11 +46,11 @@ class OrderCreateApp(customtkinter.CTkToplevel):
         for product in products:
 
             label = customtkinter.CTkLabel(
-                master=self, text=f'{product["Name"]} {product["Price"]}€')
+                master=self, text=f'{product["name"]} {product["price"]}€')
             label.pack()
             entry = customtkinter.CTkEntry(master=self, placeholder_text=f"1")
             entry.pack(padx=20, pady=10)
-            self.products.append((product["Name"], product["Price"], entry))
+            self.products.append((product["name"], product["price"], entry))
 
         self.send_button = customtkinter.CTkButton(
             self, text="Submit", command=lambda: send_order(self))

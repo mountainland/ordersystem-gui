@@ -48,6 +48,8 @@ def send_order(self):
     order = data["order"]
     for product in self.products:
         value = product[2].get()
+        if value == '':
+            continue
         order.append(
             {"name": product[0], "price": int(product[1]), "count": int(value)})
 
@@ -67,9 +69,9 @@ def send_order(self):
 
 
 def add_products_to_popup(self, order_info, popup_window):
-    for product in order_info["Order"]:
+    for product in order_info["order"]:
         label = customtkinter.CTkLabel(
-            master=popup_window, text=f'{product["name"]} {product["price"]}€')
+            master=popup_window, text=f'{product.get("name")} {product.get("price")}€')
         label.pack()
         entry = customtkinter.CTkEntry(
             master=popup_window, placeholder_text="1")
@@ -77,7 +79,7 @@ def add_products_to_popup(self, order_info, popup_window):
         entry.insert(0, product["count"])
         entry.configure(state="disabled")
         self.products.append(
-            (product["name"], product["price"], entry))
+            (product.get("name"), product.get("price"), entry))
 
 
 def setup_popup_defaults(order_info, popup_window):
@@ -87,7 +89,7 @@ def setup_popup_defaults(order_info, popup_window):
     entry = customtkinter.CTkEntry(
         master=popup_window, placeholder_text="1")
     entry.pack(padx=20, pady=10)
-    entry.insert(0, order_info["Customer"])
+    entry.insert(0, order_info["customer"])
     entry.configure(state="disabled")
 
 

@@ -68,28 +68,28 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
             first_name_label.pack(pady=5)
             first_name_entry = customtkinter.CTkEntry(popup_window)
             first_name_entry.pack(pady=5)
-            first_name_entry.insert(0, customer_data.get('FirstName'))
+            first_name_entry.insert(0, customer_data.get('firstname'))
 
             last_name_label = customtkinter.CTkLabel(
                 popup_window, text="Sukunimi:")
             last_name_label.pack(pady=5)
             last_name_entry = customtkinter.CTkEntry(popup_window)
             last_name_entry.pack(pady=5)
-            last_name_entry.insert(0, customer_data.get('LastName'))
+            last_name_entry.insert(0, customer_data.get('lastname'))
             
             phonenumber_label = customtkinter.CTkLabel(
                 popup_window, text="Puhelinnumero:")
             phonenumber_label.pack(pady=5)
             phonenumber_entry = customtkinter.CTkEntry(popup_window)
             phonenumber_entry.pack(pady=5)
-            phonenumber_entry.insert(0, customer_data.get('PhoneNumber'))
+            phonenumber_entry.insert(0, customer_data.get('phonenumber'))
             
             email_label = customtkinter.CTkLabel(
                 popup_window, text="Sähköposti:")
             email_label.pack(pady=5)
             email_entry = customtkinter.CTkEntry(popup_window)
             email_entry.pack(pady=5)
-            email_entry.insert(0, customer_data.get('Email'))
+            email_entry.insert(0, customer_data.get('email'))
 
             balance_label = customtkinter.CTkLabel(
                 popup_window, text="Saldo:")
@@ -97,7 +97,7 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
             
             balance_entry = customtkinter.CTkEntry(popup_window)
             balance_entry.pack(pady=5)
-            balance_entry.insert(0, customer_data.get('Balance'))            
+            balance_entry.insert(0, customer_data.get('balance'))            
         
             if not self.user["is_admin"]:
                 balance_entry.configure(state="disabled")                
@@ -130,12 +130,12 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
     def save_customer_info(self, customer_id, first_name, last_name, balance, phonenumber, email):
         # Create payload data
         payload = {
-            "FirstName": first_name,
-            "LastName": last_name,
-            "PhoneNumber": phonenumber,
-            "Email": email}
+            "firstname": first_name,
+            "lastname": last_name,
+            "phonenumber": phonenumber,
+            "email": email}
         
-        payload["Balance"] = int(balance)
+        payload["balance"] = balance
             
         try:
             # Make API request to update customer info
