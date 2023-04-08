@@ -9,9 +9,9 @@ url = "https://api.ordersystem.luova.club/"
 import json
 
 global user
-user = "vuoreol"
+user = ""
 global password
-password = "mau"
+password = ""
 products = []
 
 global latest_order
@@ -37,7 +37,9 @@ def is_names(order):
 
 def get_orders():
     global column
+    column = 0
     global row
+    column = 0
     global latest_order
     data = requests.get(f"{url}orders/", headers={"user": user, "password": password})
     
@@ -46,7 +48,7 @@ def get_orders():
     data = json.loads(data)
     
     for item in data['orders']:
-        if item["is_ready"] == True:
+        if item["is_ready"] == False:
             continue
         customer = item['customer']
         
@@ -58,7 +60,6 @@ def get_orders():
 
         text = f"ID: {ID}"
         for product in order:
-            print(product)
             name = product.get("name")
             if not name == None:
                 text += f"""\n{name}: {product.get("count")}"""
@@ -66,7 +67,7 @@ def get_orders():
                 continue
         
         tk.Message(root, width=800, text=text, highlightbackground="red", highlightcolor="red", highlightthickness=10).grid(column=column, row=row, padx=10, pady=10)
-        if not column > 4:
+        if not column > 2:
             column += 1
         else:
             row += 1
@@ -84,7 +85,7 @@ def get_orders():
         
     
 
-def reload_screen(row=row, column=column):
+def reload_screen():
     for widget in root.winfo_children():
         widget.destroy()
         
@@ -97,6 +98,6 @@ root.title("LuovaClubin Tilausjärjestelmä")
 
 
 
-reload_screen(row, column)
+reload_screen()
 
 root.mainloop()
