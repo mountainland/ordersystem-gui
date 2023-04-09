@@ -1,3 +1,5 @@
+
+
 import tkinter as tk
 
 import requests
@@ -29,11 +31,12 @@ def make_sound():
     winsound.Beep(Freq,Dur)
     print("mau")
 
-def is_names(order):
-    for product in order:
-        if product.get("name") == None or product.get("count") == None:
-            return False
-    return True
+def create(root, ID):
+    canvas = tk.Canvas(root, width=200, height=200)
+    canvas.grid(row=row, column=column, padx=10, pady=10)
+
+    canvas.create_oval(50, 50, 150, 150, fill="blue")
+    canvas.create_text(100, 100, text=ID, fill="white", font=("Arial", 50))
 
 def get_orders():
     global column
@@ -50,33 +53,16 @@ def get_orders():
     for item in data['orders']:
         if item["is_ready"] == False:
             continue
-        customer = item['customer']
-        
-        order = item["order"]
-        if not is_names(order):
-            continue
 
         ID = item["ID"]
-
-        text = f"ID: {ID}"
-        for product in order:
-            name = product.get("name")
-            if not name == None:
-                text += f"""\n{name}: {product.get("count")}"""
-            else:
-                continue
         
-        tk.Message(root, width=800, text=text, highlightbackground="red", highlightcolor="red", highlightthickness=10).grid(column=column, row=row, padx=10, pady=10)
-        if not column > 2:
+        create(root, ID)
+        
+        if not column > 3:
             column += 1
         else:
             row += 1
-            column = 0
-        
-        if latest_order < ID:
-            chime.success()
-            latest_order = ID
-            
+            column = 0    
 
             
         
@@ -91,7 +77,7 @@ def reload_screen():
         
     get_orders()
 
-    root.after(5000, reload_screen)
+    root.after(200, reload_screen)
 
 root = tk.Tk()
 root.title("LuovaClubin Tilausjärjestelmä")
