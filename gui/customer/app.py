@@ -7,15 +7,14 @@ import requests
 import traceback
 import json
 
-from .create import CustomerCreateApp
+from .create import CustomerCreateApp # pylint: disable=relative-beyond-top-level
 
-from .fetch import CustomerFetchApp
+from .fetch import CustomerFetchApp # pylint: disable=relative-beyond-top-level
 
 class CustomerApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.username = parent.username
-        self.password = parent.password
+        self.user = parent.user
     
         self.geometry(f"{1100}x{580}")
         self.title("Customer")

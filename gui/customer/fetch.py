@@ -7,11 +7,11 @@ import requests
 import traceback
 import json
 
+
 class CustomerFetchApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.username = parent.username
-        self.password = parent.password
+        self.user = parent.user
         self.geometry(f"{1100}x{580}")
         self.title("Customer")
         self.label = customtkinter.CTkLabel(self, text="Asiakashaku")
@@ -49,12 +49,14 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
         try:
             # Make API request to get customer info
             customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
-            headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+            headers = {"Content-Type": "application/json",
+                       "user": self.user["username"], "password": self.user["password"]}
 
             customer_response = requests.get(customer_url, headers=headers)
-            #customer_response.raise_for_status()
-            customer_data = json.loads(customer_response.text.replace("'", '"'))
-            #customer_data = customer_response.json()
+            # customer_response.raise_for_status()
+            customer_data = json.loads(
+                customer_response.text.replace("'", '"'))
+            # customer_data = customer_response.json()
             self.attributes('-topmost', False)  # for focus on topleve
             # Create popup window with customer info and editing fields
             popup_window = customtkinter.CTkToplevel()
@@ -66,24 +68,42 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
             first_name_label.pack(pady=5)
             first_name_entry = customtkinter.CTkEntry(popup_window)
             first_name_entry.pack(pady=5)
-            first_name_entry.insert(0, customer_data.get('FirstName'))
+            first_name_entry.insert(0, customer_data.get('firstname'))
 
             last_name_label = customtkinter.CTkLabel(
                 popup_window, text="Sukunimi:")
             last_name_label.pack(pady=5)
             last_name_entry = customtkinter.CTkEntry(popup_window)
             last_name_entry.pack(pady=5)
-            last_name_entry.insert(0, customer_data.get('LastName'))
+            last_name_entry.insert(0, customer_data.get('lastname'))
+            
+            phonenumber_label = customtkinter.CTkLabel(
+                popup_window, text="Puhelinnumero:")
+            phonenumber_label.pack(pady=5)
+            phonenumber_entry = customtkinter.CTkEntry(popup_window)
+            phonenumber_entry.pack(pady=5)
+            phonenumber_entry.insert(0, customer_data.get('phonenumber'))
+            
+            email_label = customtkinter.CTkLabel(
+                popup_window, text="Sähköposti:")
+            email_label.pack(pady=5)
+            email_entry = customtkinter.CTkEntry(popup_window)
+            email_entry.pack(pady=5)
+            email_entry.insert(0, customer_data.get('email'))
 
             balance_label = customtkinter.CTkLabel(
                 popup_window, text="Saldo:")
             balance_label.pack(pady=5)
+            
             balance_entry = customtkinter.CTkEntry(popup_window)
             balance_entry.pack(pady=5)
-            balance_entry.insert(0, customer_data.get('Balance'))
+            balance_entry.insert(0, customer_data.get('balance'))            
+        
+            if not self.user["is_admin"]:
+                balance_entry.configure(state="disabled")                
 
             save_button = customtkinter.CTkButton(popup_window, text="Tallenna muutokset", command=lambda: self.save_customer_info(
-                customer_id, first_name_entry.get(), last_name_entry.get(), balance_entry.get()))
+                customer_id, first_name_entry.get(), last_name_entry.get(), balance_entry.get(), phonenumber_entry.get(), email_entry.get()))
             save_button.pack(pady=10)
 
             close_button = customtkinter.CTkButton(
@@ -107,20 +127,24 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
                 popup_window, text="Poistu", command=popup_window.destroy)
             close_button.pack(pady=10)
 
-    def save_customer_info(self, customer_id, first_name, last_name, balance):
+    def save_customer_info(self, customer_id, first_name, last_name, balance, phonenumber, email):
         # Create payload data
         payload = {
-            "FirstName": first_name,
-            "LastName": last_name,
-            "Balance": int(balance)
-        }
-
+            "firstname": first_name,
+            "lastname": last_name,
+            "phonenumber": phonenumber,
+            "email": email}
+        
+        payload["balance"] = balance
+            
         try:
             # Make API request to update customer info
             customer_url = f"https://api.ordersystem.luova.club/customer/{customer_id}"
-            headers = {"Content-Type": "application/json", "user": self.username, "password": self.password}
+            headers = {"Content-Type": "application/json",
+                       "user": self.user["username"], "password": self.user["password"]}
 
-            customer_response = requests.post(customer_url, json=payload, headers=headers)
+            customer_response = requests.post(
+                customer_url, json=payload, headers=headers)
             customer_response.raise_for_status()
 
             # Show success message in popup window
@@ -135,6 +159,7 @@ class CustomerFetchApp(customtkinter.CTkToplevel):
             close_button = customtkinter.CTkButton(
                 popup_window, text="Poistu", command=popup_window.destroy)
             close_button.pack(pady=10)
+
         except requests.exceptions.RequestException as e:
             # Show error message and technical details in popup window
             popup_window = tk.Toplevel()

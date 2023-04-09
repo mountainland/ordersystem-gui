@@ -6,23 +6,23 @@ import customtkinter
 import requests
 import traceback
 
-from .fetch import OrderSearchApp
+from .fetch import OrderSearchApp  # pylint: disable=relative-beyond-top-level
 
-from .create import OrderCreateApp
+from .create import OrderCreateApp  # pylint: disable=relative-beyond-top-level
+
 
 class OrderApp(customtkinter.CTkToplevel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.username = parent.username
-        self.password = parent.password
-        
+        self.user = parent.user
+
         self.geometry(f"{1100}x{580}")
-        self.title("Customer")
-        self.label = customtkinter.CTkLabel(self, text="Customer")
+        self.title("Tilaus")
+        self.label = customtkinter.CTkLabel(self, text="Tilaus")
         self.label.pack(padx=20, pady=20)
         self.attributes('-topmost', True)  # for focus on toplevel
         self.build_menu()
-        
+
         self.fetch = None
 
     def build_menu(self):
@@ -45,7 +45,7 @@ class OrderApp(customtkinter.CTkToplevel):
     def open_search(self):
         open_window = OrderSearchApp(self)
         open_window.focus()
-        
+
     def open_create(self):
         open_window = OrderCreateApp(self)
         open_window.focus()
