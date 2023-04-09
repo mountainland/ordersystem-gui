@@ -1,0 +1,5 @@
+chime==0.7.0
+darkdetect==0.6.0
+requests==2.27.1
+torch==1.13.1
+typing_extensions==4.5.0
