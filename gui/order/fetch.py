@@ -97,6 +97,11 @@ class OrderSearchApp(customtkinter.CTkToplevel):
             )
             ready_button.pack(pady=10)
 
+            picked_button = customtkinter.CTkButton(
+                popup_window, text="Tilaus noudettu", command=self.mark_picked
+            )
+            picked_button.pack(pady=10)
+
         except requests.exceptions.RequestException as e:
             create_error_window()
 
@@ -110,7 +115,18 @@ class OrderSearchApp(customtkinter.CTkToplevel):
         order_response = requests.post(
             orders_url, json=data, headers=headers, timeout=20)
         order_response.raise_for_status()
-            
+    
+    def mark_picked(self):
+        orders_url = f"https://api.ordersystem.luova.club/order/{self.order_id_entry.get()}"
+        headers = {"Content-Type": "application/json",
+                "user": self.user["username"], "password": self.user["password"]}
+
+        data = {"picked": True}
+        
+        order_response = requests.post(
+            orders_url, json=data, headers=headers, timeout=20)
+        order_response.raise_for_status()
+    
     def get_order(self, order_url, headers):
         order_response = requests.get(order_url, headers=headers)
         order_response.raise_for_status()

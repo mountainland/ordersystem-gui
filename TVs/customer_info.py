@@ -11,9 +11,9 @@ url = "https://api.ordersystem.luova.club/"
 import json
 
 global user
-user = ""
+user = "user"
 global password
-password = ""
+password = "user"
 products = []
 
 global latest_order
@@ -24,12 +24,6 @@ row = 0
 
 global column
 column = 0
-
-def make_sound():
-    Freq = 1000 # Set Frequency To 2500 Hertz
-    Dur = 1000 # Set Duration To 1000 ms == 1 second
-    winsound.Beep(Freq,Dur)
-    print("mau")
 
 def create(root, ID):
     canvas = tk.Canvas(root, width=200, height=200)
@@ -45,13 +39,13 @@ def get_orders():
     column = 0
     global latest_order
     data = requests.get(f"{url}orders/", headers={"user": user, "password": password})
-    
+    print(data.text)
     data = data.text.replace("'", '"').replace("True", "true").replace("False", "false")
     
     data = json.loads(data)
     
     for item in data['orders']:
-        if item["is_ready"] == False:
+        if item["is_ready"] == False or item["picked"] == True:
             continue
 
         ID = item["ID"]
@@ -62,13 +56,7 @@ def get_orders():
             column += 1
         else:
             row += 1
-            column = 0    
-
-            
-        
-        
-        # Ääni kun uusi tilaus
-        
+            column = 0
     
 
 def reload_screen():
