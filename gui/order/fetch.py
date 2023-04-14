@@ -78,6 +78,20 @@ class OrderSearchApp(customtkinter.CTkToplevel):
                 isready = "Kyllä"
             entry.insert(0, isready)
             entry.configure(state="disabled")
+            
+            order_is_ready_label = customtkinter.CTkLabel(
+                popup_window, text="Noudettu:")
+            order_is_ready_label.pack(pady=5)
+            entry = customtkinter.CTkEntry(
+                master=popup_window, placeholder_text="1")
+            entry.pack(padx=20, pady=10)
+            isready = "Ei"
+            if order_info["picked"] is True:
+                isready = "Kyllä"
+            entry.insert(0, isready)
+            entry.configure(state="disabled")
+            
+            
 
             label = customtkinter.CTkLabel(
                 master=popup_window, text='Kokonaishinta:')
